@@ -1,9 +1,8 @@
-
 Building configuration...
 
-Current configuration : 4206 bytes
+Current configuration : 5091 bytes
 !
-! Last configuration change at 09:44:55 UTC Mon Feb 22 2021 by cisco
+! Last configuration change at 21:23:51 UTC Wed Feb 24 2021 by developer
 !
 version 16.9
 service timestamps debug datetime msec
@@ -17,6 +16,22 @@ hostname csr1000v-1
 boot-start-marker
 boot-end-marker
 !
+!
+vrf definition Alexpod
+ description Alexpod VRF
+ rd 1:26
+!
+vrf definition blue
+ description Blue VRF
+ rd 1:410
+!
+vrf definition green
+ description Green VRF
+ rd 1:420
+!
+vrf definition red
+ description Red VRF
+ rd 1:400
 !
 no logging console
 enable secret 5 $1$20ue$uC.uSGo6nvfWs63EjjzRP.
@@ -136,6 +151,34 @@ redundancy
 ! 
 !
 !
+interface Loopback26
+ description Pod Number 26
+ ip address 10.111.26.1 255.255.255.255
+!
+interface Loopback126
+ description Pod Number 26
+ ip address 10.111.26.2 255.255.255.255
+!
+interface Loopback1126
+ description Pod Number 1126
+ vrf forwarding red
+ no ip address
+!
+interface Loopback1226
+ description Pod Number 1226
+ vrf forwarding blue
+ no ip address
+!
+interface Loopback1326
+ description Pod Number 1326
+ vrf forwarding green
+ no ip address
+!
+interface Loopback1426
+ description Pod Number 1426
+ vrf forwarding Alexpod
+ no ip address
+!
 interface GigabitEthernet1
  description MANAGEMENT INTERFACE - DON'T TOUCH ME
  ip address 10.10.20.48 255.255.255.0
@@ -196,6 +239,11 @@ line vty 0 4
  login local
  transport input ssh
 !
+ntp server 10.11.26.65
+ntp server 10.12.26.65
+ntp server 10.13.26.65
+ntp server 10.14.26.65
+ntp server 10.111.26.66
 !
 !
 !
